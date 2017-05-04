@@ -1,0 +1,33 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- Abstract bean definition of the default transaction context manager -->
+	<bean 
+		id="transactionContextManagerAbstract" 
+		class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl" 
+		init-method="init" 
+		abstract="true">
+		
+		<!-- Transaction Context Factory -->
+		<!-- The default transaction context factory implementation -->
+		<property name="transactionContextFactory" value="it.diepet.spring.tx.context.impl.DefaultTransactionContextFactoryImpl" />
+		
+		<!-- Transaction Event Listeners for managing transaction context lifecycle -->
+		<!-- DO NOT OVERRIDE THESE PROPERTIES -->
+		<property name="beginEventListener">
+			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.BeginTransactionEventListener"/>
+		</property>
+		<property name="commitEventListener">
+			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.CommitTransactionEventListener"/>
+		</property>
+		<property name="rollbackEventListener">
+			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.RollbackTransactionEventListener"/>
+		</property>
+		<property name="transactionErrorEventListener">
+			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.TransactionErrorEventListener"/>
+		</property>
+		
+	</bean>
+
+</beans>
