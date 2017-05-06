@@ -65,9 +65,14 @@ http://www.springframework.org/schema/jdbc http://www.springframework.org/schema
 	</bean>
 	
 	<!-- Transaction Context Manager Configuration -->
+	
+	<!--import spring-tx-context configuration: no any instance will be created in the Spring context-->
 	<import resource="classpath:META-INF/transaction-context-manager-application-context.xml"/>
+	
+	<!-- Creates the transaction context manager to handle a living transaction context -->
 	<bean id="transactionContextManager" parent="transactionContextManagerAbstract" />
 
+	<!-- Test transaction context listener -->
 	<bean id="testTransactionContextListener" class="it.diepet.spring.tx.context.test.app.listener.TestTransactionContextListener" />
 
 </beans>
