@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import it.diepet.spring.tx.context.TransactionContextManager;
 import it.diepet.spring.tx.context.test.app.dao.ProductDAO;
+import it.diepet.spring.tx.context.test.app.error.ApplicationException;
 import it.diepet.spring.tx.context.test.app.error.ApplicationRuntimeException;
 import it.diepet.spring.tx.context.test.app.model.Product;
 import it.diepet.spring.tx.context.test.util.StringCollector;
@@ -156,6 +157,30 @@ public class ProductServiceImpl implements ProductService {
 		LOGGER.debug("[START] launchNotTransactionalMethod()");
 		StringCollector.add("Transaction Active: " + transactionContextManager.isTransactionActive());
 		LOGGER.debug("[END] launchNotTransactionalMethod()");
+	}
+
+	@Override
+	@Transactional
+	public void launchRequiresNewMethod() {
+		LOGGER.debug("[START] launchRequiresNewMethod()");
+		StringCollector.add("productService.launchRequiresNewMethod()");
+		transactionContextManager.getTransactionContext().setAttribute("operation", "launchRequiresNewMethod");
+		warehouseService.executeRequiresNewMethod();
+		LOGGER.debug("[END] launchRequiresNewMethod()");
+	}
+
+	@Override
+	@Transactional
+	public void launchMethodFailingWhenCommits() {
+		LOGGER.debug("[START] launchMethodFailingWhenCommits()");
+		StringCollector.add("productService.launchMethodFailingWhenCommits()");
+		transactionContextManager.getTransactionContext().setAttribute("operation", "launchMethodFailingWhenCommits");
+		try {
+			warehouseService.launchCheckedException();
+		} catch (ApplicationException e) {
+			StringCollector.add("Thrown ApplicationException");
+		}
+		LOGGER.debug("[END] launchMethodFailingWhenCommits()");
 	}
 
 }

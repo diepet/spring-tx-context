@@ -26,4 +26,8 @@ public interface ProductService {
 
 	void launchNotTransactionalMethod();
 
+	void launchRequiresNewMethod();
+
+	void launchMethodFailingWhenCommits();
+
 }

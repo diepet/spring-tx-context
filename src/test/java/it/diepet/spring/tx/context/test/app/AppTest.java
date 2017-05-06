@@ -141,4 +141,34 @@ public class AppTest {
 		Assert.assertEquals("Operation: launchTransactionalMethod", stringList.get(2));
 		Assert.assertEquals("Transaction Active: false", stringList.get(3));
 	}
+
+	@Test
+	public void testRequiresNewMethod() {
+		productService.launchRequiresNewMethod();
+		List<String> stringList = StringCollector.getList();
+		Assert.assertNotNull(stringList);
+		Assert.assertEquals(6, stringList.size());
+		Assert.assertEquals("productService.launchRequiresNewMethod()", stringList.get(0));
+		Assert.assertEquals("warehouseService.executeRequiresNewMethod()", stringList.get(1));
+		Assert.assertTrue(stringList.get(2).startsWith("Transaction Context ID: "));
+		Assert.assertEquals("Operation: executeRequiresNewMethod", stringList.get(3));
+		Assert.assertTrue(stringList.get(4).startsWith("Transaction Context ID: "));
+		Assert.assertEquals("Operation: launchRequiresNewMethod", stringList.get(5));
+	}
+
+	@Test
+	public void testMethodFailingWhenCommits() {
+		try {
+			productService.launchMethodFailingWhenCommits();
+		} catch (RuntimeException e) {
+			List<String> stringList = StringCollector.getList();
+			Assert.assertNotNull(stringList);
+			Assert.assertEquals(3, stringList.size());
+			Assert.assertEquals("productService.launchMethodFailingWhenCommits()", stringList.get(0));
+			Assert.assertEquals("warehouseService.launchCheckedException()", stringList.get(1));
+			Assert.assertEquals("Thrown ApplicationException", stringList.get(2));
+			return;
+		}
+		Assert.fail("RuntimeException not thrown");
+	}
 }
