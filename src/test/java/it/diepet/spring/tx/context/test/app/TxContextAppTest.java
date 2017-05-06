@@ -17,7 +17,7 @@ import it.diepet.spring.tx.context.test.util.StringCollector;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:META-INF/test-spring-tx-context-application-context.xml")
-public class AppTest {
+public class TxContextAppTest {
 
 	@Autowired
 	private ProductService productService;
