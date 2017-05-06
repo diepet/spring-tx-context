@@ -25,21 +25,45 @@ Current last version: 0.9.0
 Example:
 
 ```xml
-	<!-- TX Configuration -->		
+	<!-- TX Manager configuration by using spring-tx-eventdispatcher -->		
 	<bean id="transactionManager" class="it.diepet.spring.tx.eventdispatcher.EventDispatcherJpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory"></property>
 	</bean>
 	
-	<!--import spring-tx-context configuration: no any instance will be created in the Spring context-->
+	<!--import spring-tx-context configuration: none instance will be created in the Spring context-->
 	<import resource="classpath:META-INF/transaction-context-manager-application-context.xml"/>
 	
 	<!-- Creates the transaction context manager to handle a living transaction context -->
 	<bean id="transactionContextManager" parent="transactionContextManagerAbstract" />
 ```
 
+And that's it. After terminated a transaction successfully, its transaction context will be published. More specifically, an application event of this class:
 
+`it.diepet.spring.tx.context.event.TransactionContextEvent`
 
+will be published by using the [Spring application event publisher](http://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html).
 
+# Usage
 
+Inside a transactional method, it is possible to retrieve its transaction context by using the transaction context manager.
 
+```Java
+class MyServiceImpl implements MyService {
 
+	@Autowired
+	private TransactionContextManager transactionContextManager;
+
+	@Transactional
+	void transactionalMethod() { 
+		// Retrieves the current transaction context (
+		TransactionContext transactionContext = transactionContextManager.getTransactionContext();
+		// some db stuff
+		....
+		// add an attribute having key "hello" and value "world"
+		transactionContext.setAttribute("hello", "world");
+		transactionContext.setListAttribure("someIntegerList", 10);
+		transactionContext.setListAttribure("someIntegerList", 10);		
+		
+	}
+
+}
