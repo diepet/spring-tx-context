@@ -2,8 +2,6 @@ package it.diepet.spring.tx.context.test.app.service;
 
 import java.util.List;
 
-import it.diepet.spring.tx.context.test.app.error.ApplicationException;
-import it.diepet.spring.tx.context.test.app.error.ApplicationRuntimeException;
 import it.diepet.spring.tx.context.test.app.model.Product;
 
 public interface ProductService {
@@ -12,18 +10,20 @@ public interface ProductService {
 
 	List<Product> findAll();
 
-	void successfullOperation();
+	void addTwoProducts(Product p1, Product p2);
 
-	void launchCheckedException() throws ApplicationException;
+	void addProductToContextAndRemoveIt();
 
-	void launchCheckedExceptionForRollback() throws ApplicationException;
+	void retrieveContextInANotTransactionalMethod();
 
-	void launchUncheckedException() throws ApplicationRuntimeException;
+	void populateContextListAttributeWrong();
 
-	void callSuspendingTransactionWarehouseMethod();
+	void populateContextSetAttributeWrong();
 
-	void callFailingWarehouseMethod();
+	void launchRuntimeException();
 
-	void callRequiresNewWarehouseMethod();
+	void launchTransactionalMethod();
+
+	void launchNotTransactionalMethod();
 
 }

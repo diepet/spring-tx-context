@@ -10,14 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import it.diepet.spring.tx.context.test.app.error.ApplicationException;
 import it.diepet.spring.tx.context.test.app.error.ApplicationRuntimeException;
 import it.diepet.spring.tx.context.test.app.model.Product;
 import it.diepet.spring.tx.context.test.app.service.ProductService;
 import it.diepet.spring.tx.context.test.util.StringCollector;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:META-INF/test-application-context.xml")
+@ContextConfiguration(locations = "classpath:META-INF/test-spring-tx-context-application-context.xml")
 public class AppTest {
 
 	@Autowired
@@ -42,143 +41,104 @@ public class AppTest {
 
 		List<String> stringList = StringCollector.getList();
 		Assert.assertNotNull(stringList);
-		Assert.assertEquals(6, stringList.size());
-		Assert.assertTrue(
-				stringList.get(0).startsWith("it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent"));
-		Assert.assertEquals("productService.add()", stringList.get(1));
-		Assert.assertTrue(
-				stringList.get(2).startsWith("it.diepet.spring.tx.eventdispatcher.event.CommitTransactionEvent"));
-		Assert.assertTrue(
-				stringList.get(3).startsWith("it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent"));
-		Assert.assertEquals("productService.findAll()", stringList.get(4));
-		Assert.assertTrue(
-				stringList.get(5).startsWith("it.diepet.spring.tx.eventdispatcher.event.CommitTransactionEvent"));
+		Assert.assertEquals(8, stringList.size());
+		Assert.assertEquals("productService.add()", stringList.get(0));
+		Assert.assertTrue(stringList.get(1).startsWith("Transaction Context ID: "));
+		Assert.assertEquals("Operation: add", stringList.get(2));
+		Assert.assertEquals("Added product to list: Apple", stringList.get(3));
+		Assert.assertEquals("Product set size 1", stringList.get(4));
+		Assert.assertEquals("productService.findAll()", stringList.get(5));
+		Assert.assertTrue(stringList.get(6).startsWith("Transaction Context ID: "));
+		Assert.assertEquals("Operation: findAll", stringList.get(7));
 	}
 
 	@Test
-	public void testSuccessfulOperation() {
-		productService.successfullOperation();
+	public void testAddTwoProducts() {
+		Product product1 = new Product();
+		product1.setId(98L);
+		product1.setCode("999998");
+		product1.setDescription("Pear");
+
+		Product product2 = new Product();
+		product2.setId(99L);
+		product2.setCode("999999");
+		product2.setDescription("Lemon");
+
+		productService.addTwoProducts(product1, product2);
+		List<String> stringList = StringCollector.getList();
+		Assert.assertNotNull(stringList);
+		Assert.assertEquals(6, stringList.size());
+		Assert.assertEquals("productService.addTwoProducts()", stringList.get(0));
+		Assert.assertTrue(stringList.get(1).startsWith("Transaction Context ID: "));
+		Assert.assertEquals("Operation: addTwoProducts", stringList.get(2));
+		Assert.assertEquals("Added product to list: Pear", stringList.get(3));
+		Assert.assertEquals("Added product to list: Lemon", stringList.get(4));
+		Assert.assertEquals("Product set size 2", stringList.get(5));
+
+	}
+
+	@Test
+	public void testRemoveAttribute() {
+		productService.addProductToContextAndRemoveIt();
 		List<String> stringList = StringCollector.getList();
 		Assert.assertNotNull(stringList);
 		Assert.assertEquals(3, stringList.size());
-		Assert.assertTrue(
-				stringList.get(0).startsWith("it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent"));
-		Assert.assertEquals("productService.successfullOperation()", stringList.get(1));
-		Assert.assertTrue(
-				stringList.get(2).startsWith("it.diepet.spring.tx.eventdispatcher.event.CommitTransactionEvent"));
+		Assert.assertEquals("productService.addProductToContextAndRemoveIt()", stringList.get(0));
+		Assert.assertTrue(stringList.get(1).startsWith("Transaction Context ID: "));
+		Assert.assertEquals("Operation: null", stringList.get(2));
 	}
 
 	@Test
-	public void testLaunchCheckedException() {
-		try {
-			productService.launchCheckedException();
-		} catch (ApplicationException e) {
-			List<String> stringList = StringCollector.getList();
-			Assert.assertNotNull(stringList);
-			Assert.assertEquals(3, stringList.size());
-			Assert.assertTrue(
-					stringList.get(0).startsWith("it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent"));
-			Assert.assertEquals("productService.launchCheckedException()", stringList.get(1));
-			Assert.assertTrue(
-					stringList.get(2).startsWith("it.diepet.spring.tx.eventdispatcher.event.CommitTransactionEvent"));
-			return;
-		}
-		Assert.fail();
-	}
-
-	@Test
-	public void testLaunchUncheckedException() {
-		try {
-			productService.launchUncheckedException();
-		} catch (ApplicationRuntimeException e) {
-			List<String> stringList = StringCollector.getList();
-			Assert.assertNotNull(stringList);
-			Assert.assertEquals(3, stringList.size());
-			Assert.assertTrue(
-					stringList.get(0).startsWith("it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent"));
-			Assert.assertEquals("productService.launchUncheckedException()", stringList.get(1));
-			Assert.assertTrue(
-					stringList.get(2).startsWith("it.diepet.spring.tx.eventdispatcher.event.RollbackTransactionEvent"));
-			return;
-		}
-		Assert.fail();
-	}
-
-	@Test
-	public void testLaunchCheckedExceptionForRollback() {
-		try {
-			productService.launchCheckedExceptionForRollback();
-		} catch (ApplicationException e) {
-			List<String> stringList = StringCollector.getList();
-			Assert.assertNotNull(stringList);
-			Assert.assertEquals(3, stringList.size());
-			Assert.assertTrue(
-					stringList.get(0).startsWith("it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent"));
-			Assert.assertEquals("productService.launchCheckedExceptionForRollback()", stringList.get(1));
-			Assert.assertTrue(
-					stringList.get(2).startsWith("it.diepet.spring.tx.eventdispatcher.event.RollbackTransactionEvent"));
-			return;
-		}
-		Assert.fail();
-	}
-
-	@Test
-	public void testSuspendTransaction() {
-		productService.callSuspendingTransactionWarehouseMethod();
-		List<String> stringList = StringCollector.getList();
-		Assert.assertNotNull(stringList);
-		Assert.assertEquals(6, stringList.size());
-		Assert.assertTrue(
-				stringList.get(0).startsWith("it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent"));
-		Assert.assertEquals("productService.callSuspendingTransactionWarehouseMethod()", stringList.get(1));
-		Assert.assertTrue(
-				stringList.get(2).startsWith("it.diepet.spring.tx.eventdispatcher.event.SuspendTransactionEvent"));
-		Assert.assertEquals("warehouseService.suspendCurrentTransaction()", stringList.get(3));
-		Assert.assertTrue(
-				stringList.get(4).startsWith("it.diepet.spring.tx.eventdispatcher.event.ResumeTransactionEvent"));
-		Assert.assertTrue(
-				stringList.get(5).startsWith("it.diepet.spring.tx.eventdispatcher.event.CommitTransactionEvent"));
-	}
-
-	@Test
-	public void testFailureInheritedTransaction() {
-		try {
-			productService.callFailingWarehouseMethod();
-		} catch (RuntimeException e) {
-			List<String> stringList = StringCollector.getList();
-			Assert.assertNotNull(stringList);
-			Assert.assertEquals(5, stringList.size());
-			Assert.assertTrue(
-					stringList.get(0).startsWith("it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent"));
-			Assert.assertEquals("productService.callFailingWarehouseMethod()", stringList.get(1));
-			Assert.assertEquals("warehouseService.launchCheckedExceptionForRollback()", stringList.get(2));
-			Assert.assertTrue(stringList.get(3)
-					.startsWith("it.diepet.spring.tx.eventdispatcher.event.SetRollbackOnlyTransactionEvent"));
-			Assert.assertTrue(stringList.get(4)
-					.startsWith("it.diepet.spring.tx.eventdispatcher.event.failure.CommitTransactionErrorEvent"));
-		}
-
-	}
-
-	@Test
-	public void testRequiresNewTransaction() {
-		productService.callRequiresNewWarehouseMethod();
+	public void testNullContextInANotTransactionalMethod() {
+		productService.retrieveContextInANotTransactionalMethod();
 		List<String> stringList = StringCollector.getList();
 		Assert.assertNotNull(stringList);
 		Assert.assertEquals(8, stringList.size());
-		Assert.assertTrue(
-				stringList.get(0).startsWith("it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent"));
-		Assert.assertEquals("productService.callRequiresNewWarehouseMethod()", stringList.get(1));
-		Assert.assertTrue(
-				stringList.get(2).startsWith("it.diepet.spring.tx.eventdispatcher.event.SuspendTransactionEvent"));
-		Assert.assertTrue(
-				stringList.get(3).startsWith("it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent"));
-		Assert.assertEquals("warehouseService.executeRequiresNewTransaction()", stringList.get(4));
-		Assert.assertTrue(
-				stringList.get(5).startsWith("it.diepet.spring.tx.eventdispatcher.event.CommitTransactionEvent"));
-		Assert.assertTrue(
-				stringList.get(6).startsWith("it.diepet.spring.tx.eventdispatcher.event.ResumeTransactionEvent"));
-		Assert.assertTrue(
-				stringList.get(7).startsWith("it.diepet.spring.tx.eventdispatcher.event.CommitTransactionEvent"));
+		Assert.assertEquals("productService.retrieveContextInANotTransactionalMethod()", stringList.get(0));
+		Assert.assertEquals("Transaction Context ID: ", stringList.get(1));
+		Assert.assertEquals("Operation: null", stringList.get(2));
+		Assert.assertEquals("Product List: null", stringList.get(3));
+		Assert.assertEquals("Product Set: null", stringList.get(4));
+		Assert.assertEquals("Operation: null", stringList.get(5));
+		Assert.assertEquals("Product List: null", stringList.get(6));
+		Assert.assertEquals("Product Set: null", stringList.get(7));
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testSetListAttributeToWrongAttributeName() {
+		productService.populateContextListAttributeWrong();
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testSetSetAttributeToWrongAttributeName() {
+		productService.populateContextSetAttributeWrong();
+	}
+
+	@Test
+	public void testTransactionalMethodLaunchingRuntimeException() {
+		try {
+			productService.launchRuntimeException();
+		} catch (ApplicationRuntimeException e) {
+			List<String> stringList = StringCollector.getList();
+			Assert.assertNotNull(stringList);
+			Assert.assertEquals(1, stringList.size());
+			Assert.assertEquals("productService.launchRuntimeException()", stringList.get(0));
+			return;
+		}
+		Assert.fail("ApplicationRuntimeException not thrown");
+
+	}
+
+	@Test
+	public void testActiveNotActive() {
+		productService.launchTransactionalMethod();
+		productService.launchNotTransactionalMethod();
+		List<String> stringList = StringCollector.getList();
+		Assert.assertNotNull(stringList);
+		Assert.assertEquals(4, stringList.size());
+		Assert.assertEquals("Transaction Active: true", stringList.get(0));
+		Assert.assertTrue(stringList.get(1).startsWith("Transaction Context ID: "));
+		Assert.assertEquals("Operation: launchTransactionalMethod", stringList.get(2));
+		Assert.assertEquals("Transaction Active: false", stringList.get(3));
 	}
 }

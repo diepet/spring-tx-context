@@ -11,7 +11,9 @@
 		
 		<!-- Transaction Context Factory -->
 		<!-- The default transaction context factory implementation -->
-		<property name="transactionContextFactory" value="it.diepet.spring.tx.context.impl.DefaultTransactionContextFactoryImpl" />
+		<property name="transactionContextFactory">
+			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextFactoryImpl" />
+		</property> 
 		
 		<!-- Transaction Event Listeners for managing transaction context lifecycle -->
 		<!-- DO NOT OVERRIDE THESE PROPERTIES -->

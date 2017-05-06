@@ -68,4 +68,6 @@ http://www.springframework.org/schema/jdbc http://www.springframework.org/schema
 	<import resource="classpath:META-INF/transaction-context-manager-application-context.xml"/>
 	<bean id="transactionContextManager" parent="transactionContextManagerAbstract" />
 
+	<bean id="testTransactionContextListener" class="it.diepet.spring.tx.context.test.app.listener.TestTransactionContextListener" />
+
 </beans>
