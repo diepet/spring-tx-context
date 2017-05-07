@@ -199,3 +199,6 @@ and injecting the custom transaction context factory in the transaction context 
 	<!-- Creates a custom transaction context factory -->
 	<bean id="myCustomTransactionContextFactory" parent="some.package.MyCustomTransactionContextFactoryImpl" />
 ```
+# License
+
+This project is licensed under the terms of the MIT license.
