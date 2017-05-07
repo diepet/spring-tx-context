@@ -71,13 +71,15 @@ class MyServiceImpl implements MyService {
 }
 ```
 
-When a transaction will be terminated successfully, the transaction context will be published. More specifically, an application event of this class:
+When a transaction will be terminated successfully, the transaction context will be published. 
+
+More specifically, an application event of this class:
 
 `it.diepet.spring.tx.context.event.TransactionContextEvent`
 
 will be published by using the [Spring application event publisher](http://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/ApplicationEventPublisher.html).
 
-Follows a transaction context consumer for the previous example code:
+An example of a transaction context consumer for the previous sample code:
 
 ```Java
 
@@ -96,10 +98,12 @@ public class SomeTransactionContextListener implements ApplicationListener<Trans
 		String helloAttribute = (String) transactionContext.getAttribute("hello"); 
 		
 		// stores a list of integers containing: 10, 20, 30
-		List<Integer> someIntegerListAttribute = (List<Integer>) transactionContext.getAttribute("someIntegerList");
+		List<Integer> someIntegerListAttribute = 
+			(List<Integer>) transactionContext.getAttribute("someIntegerList");
 		
 		// stores a set of strings containing: "something1" and "something2"
-		Set<String> someStringSetAttribute = (Set<String>) transactionContext.getAttribute("someStringSet");
+		Set<String> someStringSetAttribute = 
+			(Set<String>) transactionContext.getAttribute("someStringSet");
 		
 		/* ... */
 
@@ -141,10 +145,12 @@ class MyServiceImpl implements MyService {
 		String helloAttribute = (String) transactionContext.getAttribute("hello"); 
 		
 		// null will be returned because the executing method is not transactional
-		List<Integer> someIntegerListAttribute = (List<Integer>) transactionContext.getAttribute("someIntegerList");
+		List<Integer> someIntegerListAttribute = 
+			(List<Integer>) transactionContext.getAttribute("someIntegerList");
 		
 		// null will be returned because the executing method is not transactional
-		Set<String> someStringSetAttribute = (Set<String>) transactionContext.getAttribute("someStringSet");
+		Set<String> someStringSetAttribute = 
+			(Set<String>) transactionContext.getAttribute("someStringSet");
 	}
 
 }
