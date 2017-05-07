@@ -35,21 +35,21 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 	private TransactionContextFactory transactionContextFactory = new DefaultTransactionContextFactoryImpl();
 
 	/** The begin event listener. */
-	private BeginTransactionEventListener beginEventListener;
+	private BeginEventListener beginEventListener;
 
 	/** The commit event listener. */
-	private CommitTransactionEventListener commitEventListener;
+	private CommitEventListener commitEventListener;
 
 	/** The rollback event listener. */
-	private RollbackTransactionEventListener rollbackEventListener;
+	private RollbackEventListener rollbackEventListener;
 
-	/** The transaction error event listener. */
-	private TransactionErrorEventListener transactionErrorEventListener;
+	/** The transaction lifecycle error event listener. */
+	private TransactionLifecycleErrorEventListener transactionLifecycleErrorEventListener;
 
 	/**
-	 * BeginTransactionEventListener: creates a new transaction context.
+	 * BeginEventListener: creates a new transaction context.
 	 */
-	public static class BeginTransactionEventListener extends TransactionContextLifecycleAwareAdapter
+	public static class BeginEventListener extends TransactionContextLifecycleAwareAdapter
 			implements ApplicationListener<BeginEvent> {
 
 		/*
@@ -60,19 +60,19 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 		 * org.springframework.context.ApplicationEvent)
 		 */
 		@Override
-		public void onApplicationEvent(final BeginEvent beginTransactionEvent) {
-			LOGGER.debug("[START] onApplicationEvent(BeginTransactionEvent)");
+		public void onApplicationEvent(final BeginEvent beginEvent) {
+			LOGGER.debug("[START] onApplicationEvent(BeginEvent)");
 			// transaction began: create its context from the manager instance
 			transactionContextLifecycle.createTransactionContext();
-			LOGGER.debug("[END] onApplicationEvent(BeginTransactionEvent)");
+			LOGGER.debug("[END] onApplicationEvent(BeginEvent)");
 		}
 
 	}
 
 	/**
-	 * CommitTransactionEventListener: creates a new transaction context.
+	 * CommitEventListener: creates a new transaction context.
 	 */
-	public static class CommitTransactionEventListener extends TransactionContextLifecycleAwareAdapter
+	public static class CommitEventListener extends TransactionContextLifecycleAwareAdapter
 			implements ApplicationListener<CommitEvent>, ApplicationEventPublisherAware {
 
 		/** The application event publisher. */
@@ -86,8 +86,8 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 		 * org.springframework.context.ApplicationEvent)
 		 */
 		@Override
-		public void onApplicationEvent(final CommitEvent commitTransactionEvent) {
-			LOGGER.debug("[START] onApplicationEvent(CommitTransactionEvent)");
+		public void onApplicationEvent(final CommitEvent commitEvent) {
+			LOGGER.debug("[START] onApplicationEvent(CommitEvent)");
 			// store current transaction context instance
 			final TransactionContext transactionContext = transactionContextLifecycle.getTransactionContext();
 			// transaction completed at commit: destroy its context from the
@@ -98,7 +98,7 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 			// order
 			// to consume it
 			applicationEventPublisher.publishEvent(new TransactionContextEvent(transactionContext));
-			LOGGER.debug("[END] onApplicationEvent(CommitTransactionEvent)");
+			LOGGER.debug("[END] onApplicationEvent(CommitEvent)");
 		}
 
 		/*
@@ -119,24 +119,24 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 	 * TransactionErrorEventListener: creates a new transaction context.
 	 */
 	@SuppressWarnings("rawtypes")
-	public static class TransactionErrorEventListener extends TransactionContextLifecycleAwareAdapter
+	public static class TransactionLifecycleErrorEventListener extends TransactionContextLifecycleAwareAdapter
 			implements ApplicationListener<TransactionLifecycleErrorEvent> {
 
 		@Override
-		public void onApplicationEvent(final TransactionLifecycleErrorEvent transactionErrorEvent) {
-			LOGGER.debug("[START] onApplicationEvent(TransactionErrorEvent)");
+		public void onApplicationEvent(final TransactionLifecycleErrorEvent transactionLifecycleErrorEvent) {
+			LOGGER.debug("[START] onApplicationEvent(TransactionLifecycleErrorEvent)");
 			// transaction rollbacked: destroy its context from the manager
 			// instance
 			transactionContextLifecycle.destroyTransactionContext();
-			LOGGER.debug("[END] onApplicationEvent(TransactionErrorEvent)");
+			LOGGER.debug("[END] onApplicationEvent(TransactionLifecycleErrorEvent)");
 		}
 
 	}
 
 	/**
-	 * RollbackTransactionEventListener: creates a new transaction context.
+	 * RollbackEventListener: creates a new transaction context.
 	 */
-	public static class RollbackTransactionEventListener extends TransactionContextLifecycleAwareAdapter
+	public static class RollbackEventListener extends TransactionContextLifecycleAwareAdapter
 			implements ApplicationListener<RollbackEvent> {
 
 		/*
@@ -147,12 +147,12 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 		 * org.springframework.context.ApplicationEvent)
 		 */
 		@Override
-		public void onApplicationEvent(final RollbackEvent rollbackTransactionEvent) {
-			LOGGER.debug("[START] onApplicationEvent(RollbackTransactionEvent)");
+		public void onApplicationEvent(final RollbackEvent rollbackEvent) {
+			LOGGER.debug("[START] onApplicationEvent(RollbackEvent)");
 			// transaction rollbacked: destroy its context from the manager
 			// instance
 			transactionContextLifecycle.destroyTransactionContext();
-			LOGGER.debug("[END] onApplicationEvent(RollbackTransactionEvent)");
+			LOGGER.debug("[END] onApplicationEvent(RollbackEvent)");
 		}
 
 	}
@@ -241,7 +241,7 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 		this.beginEventListener.setTransactionContextLifecycle(this);
 		this.commitEventListener.setTransactionContextLifecycle(this);
 		this.rollbackEventListener.setTransactionContextLifecycle(this);
-		this.transactionErrorEventListener.setTransactionContextLifecycle(this);
+		this.transactionLifecycleErrorEventListener.setTransactionContextLifecycle(this);
 	}
 
 	/**
@@ -260,7 +260,7 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 	 * @param beginEventListener
 	 *            the new begin event listener
 	 */
-	public void setBeginEventListener(final BeginTransactionEventListener beginEventListener) {
+	public void setBeginEventListener(final BeginEventListener beginEventListener) {
 		this.beginEventListener = beginEventListener;
 	}
 
@@ -270,7 +270,7 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 	 * @param commitEventListener
 	 *            the new commit event listener
 	 */
-	public void setCommitEventListener(final CommitTransactionEventListener commitEventListener) {
+	public void setCommitEventListener(final CommitEventListener commitEventListener) {
 		this.commitEventListener = commitEventListener;
 	}
 
@@ -280,18 +280,19 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 	 * @param rollbackEventListener
 	 *            the new rollback event listener
 	 */
-	public void setRollbackEventListener(final RollbackTransactionEventListener rollbackEventListener) {
+	public void setRollbackEventListener(final RollbackEventListener rollbackEventListener) {
 		this.rollbackEventListener = rollbackEventListener;
 	}
 
 	/**
-	 * Sets the transaction error event listener.
+	 * Sets the transaction lifecycle error event listener.
 	 *
-	 * @param transactionErrorEventListener
+	 * @param transactionLifecycleErrorEventListener
 	 *            the new transaction error event listener
 	 */
-	public void setTransactionErrorEventListener(final TransactionErrorEventListener transactionErrorEventListener) {
-		this.transactionErrorEventListener = transactionErrorEventListener;
+	public void setTransactionLifecycleErrorEventListener(
+			final TransactionLifecycleErrorEventListener transactionLifecycleErrorEventListener) {
+		this.transactionLifecycleErrorEventListener = transactionLifecycleErrorEventListener;
 	}
 
 	/**

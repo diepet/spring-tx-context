@@ -18,16 +18,16 @@
 		<!-- Transaction Event Listeners for managing transaction context lifecycle -->
 		<!-- DO NOT OVERRIDE THESE PROPERTIES -->
 		<property name="beginEventListener">
-			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.BeginTransactionEventListener"/>
+			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.BeginEventListener"/>
 		</property>
 		<property name="commitEventListener">
-			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.CommitTransactionEventListener"/>
+			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.CommitEventListener"/>
 		</property>
 		<property name="rollbackEventListener">
-			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.RollbackTransactionEventListener"/>
+			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.RollbackEventListener"/>
 		</property>
-		<property name="transactionErrorEventListener">
-			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.TransactionErrorEventListener"/>
+		<property name="transactionLifecycleErrorEventListener">
+			<bean class="it.diepet.spring.tx.context.impl.DefaultTransactionContextManagerImpl.TransactionLifecycleErrorEventListener"/>
 		</property>
 		
 	</bean>
