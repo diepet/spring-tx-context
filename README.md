@@ -68,9 +68,10 @@ class MyServiceImpl implements MyService {
 		transactionContext.addSetAttribute("someStringSet", "something1");	
 	}
 
-}```
+}
+```
 
-When transaction will be terminated successfully, the transaction context will be published. More specifically, an application event of this class:
+When a transaction will be terminated successfully, the transaction context will be published. More specifically, an application event of this class:
 
 `it.diepet.spring.tx.context.event.TransactionContextEvent`
 
@@ -146,7 +147,8 @@ class MyServiceImpl implements MyService {
 		Set<String> someStringSetAttribute = (Set<String>) transactionContext.getAttribute("someStringSet");
 	}
 
-}```
+}
+```
 
 # Advanced Topics
 
@@ -175,7 +177,8 @@ class MyCustomTransactionContextFactoryImpl implements TransactionContextFactory
 		return new MyCustomTransactionContextImpl();
 	}
 
-}```
+}
+```
 
 and injecting the custom transaction context factory in the transaction context manager:
 
