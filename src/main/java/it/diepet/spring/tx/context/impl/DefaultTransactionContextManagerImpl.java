@@ -12,10 +12,10 @@ import it.diepet.spring.tx.context.TransactionContext;
 import it.diepet.spring.tx.context.TransactionContextManager;
 import it.diepet.spring.tx.context.event.TransactionContextEvent;
 import it.diepet.spring.tx.context.factory.TransactionContextFactory;
-import it.diepet.spring.tx.eventdispatcher.event.BeginTransactionEvent;
-import it.diepet.spring.tx.eventdispatcher.event.CommitTransactionEvent;
-import it.diepet.spring.tx.eventdispatcher.event.RollbackTransactionEvent;
-import it.diepet.spring.tx.eventdispatcher.event.failure.TransactionErrorEvent;
+import it.diepet.spring.tx.eventdispatcher.event.BeginEvent;
+import it.diepet.spring.tx.eventdispatcher.event.CommitEvent;
+import it.diepet.spring.tx.eventdispatcher.event.RollbackEvent;
+import it.diepet.spring.tx.eventdispatcher.event.failure.TransactionLifecycleErrorEvent;
 
 /**
  * The Class DefaultTransactionContextManagerImpl.
@@ -50,7 +50,7 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 	 * BeginTransactionEventListener: creates a new transaction context.
 	 */
 	public static class BeginTransactionEventListener extends TransactionContextLifecycleAwareAdapter
-			implements ApplicationListener<BeginTransactionEvent> {
+			implements ApplicationListener<BeginEvent> {
 
 		/*
 		 * (non-Javadoc)
@@ -60,7 +60,7 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 		 * org.springframework.context.ApplicationEvent)
 		 */
 		@Override
-		public void onApplicationEvent(final BeginTransactionEvent beginTransactionEvent) {
+		public void onApplicationEvent(final BeginEvent beginTransactionEvent) {
 			LOGGER.debug("[START] onApplicationEvent(BeginTransactionEvent)");
 			// transaction began: create its context from the manager instance
 			transactionContextLifecycle.createTransactionContext();
@@ -73,7 +73,7 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 	 * CommitTransactionEventListener: creates a new transaction context.
 	 */
 	public static class CommitTransactionEventListener extends TransactionContextLifecycleAwareAdapter
-			implements ApplicationListener<CommitTransactionEvent>, ApplicationEventPublisherAware {
+			implements ApplicationListener<CommitEvent>, ApplicationEventPublisherAware {
 
 		/** The application event publisher. */
 		private ApplicationEventPublisher applicationEventPublisher;
@@ -86,7 +86,7 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 		 * org.springframework.context.ApplicationEvent)
 		 */
 		@Override
-		public void onApplicationEvent(final CommitTransactionEvent commitTransactionEvent) {
+		public void onApplicationEvent(final CommitEvent commitTransactionEvent) {
 			LOGGER.debug("[START] onApplicationEvent(CommitTransactionEvent)");
 			// store current transaction context instance
 			final TransactionContext transactionContext = transactionContextLifecycle.getTransactionContext();
@@ -120,10 +120,10 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 	 */
 	@SuppressWarnings("rawtypes")
 	public static class TransactionErrorEventListener extends TransactionContextLifecycleAwareAdapter
-			implements ApplicationListener<TransactionErrorEvent> {
+			implements ApplicationListener<TransactionLifecycleErrorEvent> {
 
 		@Override
-		public void onApplicationEvent(final TransactionErrorEvent transactionErrorEvent) {
+		public void onApplicationEvent(final TransactionLifecycleErrorEvent transactionErrorEvent) {
 			LOGGER.debug("[START] onApplicationEvent(TransactionErrorEvent)");
 			// transaction rollbacked: destroy its context from the manager
 			// instance
@@ -137,7 +137,7 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 	 * RollbackTransactionEventListener: creates a new transaction context.
 	 */
 	public static class RollbackTransactionEventListener extends TransactionContextLifecycleAwareAdapter
-			implements ApplicationListener<RollbackTransactionEvent> {
+			implements ApplicationListener<RollbackEvent> {
 
 		/*
 		 * (non-Javadoc)
@@ -147,7 +147,7 @@ public class DefaultTransactionContextManagerImpl implements TransactionContextM
 		 * org.springframework.context.ApplicationEvent)
 		 */
 		@Override
-		public void onApplicationEvent(final RollbackTransactionEvent rollbackTransactionEvent) {
+		public void onApplicationEvent(final RollbackEvent rollbackTransactionEvent) {
 			LOGGER.debug("[START] onApplicationEvent(RollbackTransactionEvent)");
 			// transaction rollbacked: destroy its context from the manager
 			// instance
