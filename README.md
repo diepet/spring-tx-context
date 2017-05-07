@@ -1,4 +1,4 @@
-# spring-tx-context
+# spring-tx-context [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Spring Framework plugin for associating a context to a transaction.
 
@@ -113,9 +113,9 @@ public class SomeTransactionContextListener implements ApplicationListener<Trans
 
 ```
 
-If a transaction will fail (for a rollback or a runtime error), its transaction context will be destroyed and it will not published.
+If a transaction will fail (for a rollback or a runtime error), **its transaction context will be destroyed and it will not be published**.
 
-# Furthermore Notes
+# Furthermore notes
 
 If the transaction context manager is used outside a transaction, the transaction context returned will be a null-safe implementation where the capabilities for adding new attributes will not have any effect and the capabilities for reading an attribute will return null.
 
@@ -168,7 +168,7 @@ that implements the interface:
 
 The default implementation stores attributes in a simple `java.util.HashMap<String, Object>`.
 
-A custom implementation of the above interface could be used by implementing a new custom factory of the new implementation:
+A custom implementation of the above interface could be used by implementing a new custom factory for the new transaction context implementation:
 
 ```Java
 
@@ -179,7 +179,8 @@ class MyCustomTransactionContextFactoryImpl implements TransactionContextFactory
 
 	@Override
 	public TransactionContext createNewInstance() {
-		// creates an instance of a custom implementation of the it.diepet.spring.tx.context.TransactionContext interface
+		// creates an instance of a custom implementation of 
+		// the it.diepet.spring.tx.context.TransactionContext interface
 		return new MyCustomTransactionContextImpl();
 	}
 
