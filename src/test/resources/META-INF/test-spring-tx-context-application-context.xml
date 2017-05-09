@@ -60,7 +60,7 @@ http://www.springframework.org/schema/jdbc http://www.springframework.org/schema
 		class="it.diepet.spring.tx.context.test.app.service.WarehouseServiceImpl" />
 	
 	<!-- Transaction Manager Configuration -->		
-	<bean id="transactionManager" class="it.diepet.spring.tx.eventdispatcher.EventDispatcherJpaTransactionManager">
+	<bean id="transactionManager" class="it.diepet.spring.tx.lifecycle.EventDispatcherJpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory"></property>
 	</bean>
 	

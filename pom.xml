@@ -25,7 +25,7 @@
 
 		<dependency>
 			<groupId>it.diepet.spring.tx</groupId>
-			<artifactId>spring-tx-eventdispatcher</artifactId>
+			<artifactId>spring-tx-lifecycle</artifactId>
 			<version>${diepet.spring.transaction.version}</version>
 		</dependency>
 		

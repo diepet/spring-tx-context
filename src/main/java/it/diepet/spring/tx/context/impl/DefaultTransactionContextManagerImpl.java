@@ -12,10 +12,10 @@ import it.diepet.spring.tx.context.TransactionContext;
 import it.diepet.spring.tx.context.TransactionContextManager;
 import it.diepet.spring.tx.context.event.TransactionContextEvent;
 import it.diepet.spring.tx.context.factory.TransactionContextFactory;
-import it.diepet.spring.tx.eventdispatcher.event.BeginEvent;
-import it.diepet.spring.tx.eventdispatcher.event.CommitEvent;
-import it.diepet.spring.tx.eventdispatcher.event.RollbackEvent;
-import it.diepet.spring.tx.eventdispatcher.event.failure.TransactionLifecycleErrorEvent;
+import it.diepet.spring.tx.lifecycle.event.BeginEvent;
+import it.diepet.spring.tx.lifecycle.event.CommitEvent;
+import it.diepet.spring.tx.lifecycle.event.RollbackEvent;
+import it.diepet.spring.tx.lifecycle.event.failure.TransactionLifecycleErrorEvent;
 
 /**
  * The Class DefaultTransactionContextManagerImpl.
