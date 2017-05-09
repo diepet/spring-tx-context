@@ -67,7 +67,7 @@ http://www.springframework.org/schema/jdbc http://www.springframework.org/schema
 	<!-- Transaction Context Manager Configuration -->
 	
 	<!--import spring-tx-context configuration: no any instance will be created in the Spring context-->
-	<import resource="classpath:META-INF/transaction-context-manager-application-context.xml"/>
+	<import resource="classpath:META-INF/context-tx-spring-application-context"/>
 	
 	<!-- Creates the transaction context manager to handle a living transaction context -->
 	<bean id="transactionContextManager" parent="transactionContextManagerAbstract" />

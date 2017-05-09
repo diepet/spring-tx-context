@@ -19,7 +19,7 @@ Current last version: 0.9.0
 # Configuration
 
 * Configure a transaction manager as explained [here](https://github.com/diepet/spring-tx-eventdispatcher), in order to dispatch transaction lifecycle events.
-* Import `META-INF/transaction-context-manager-application-context.xml` Spring configuration file.
+* Import `META-INF/context-tx-spring-application-context.xml` Spring configuration file.
 * Define a new Spring bean inheriting its configuration from `transactionContextManagerAbstract` abstract bean.
 
 Example:
@@ -31,7 +31,7 @@ Example:
 	</bean>
 	
 	<!--import spring-tx-context configuration: none instance will be created in the Spring context-->
-	<import resource="classpath:META-INF/transaction-context-manager-application-context.xml"/>
+	<import resource="classpath:META-INF/context-tx-spring-application-context.xml"/>
 	
 	<!-- Creates the transaction context manager to handle a living transaction context -->
 	<bean id="transactionContextManager" parent="transactionContextManagerAbstract" />
