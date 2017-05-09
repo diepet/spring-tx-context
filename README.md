@@ -14,7 +14,7 @@ Current last version: 0.9.0
 
 * Java 1.6 or higher
 * Spring 3.2 or higher
-* [spring-tx-eventdispatcher](https://github.com/diepet/spring-tx-eventdispatcher)
+* [spring-tx-lifecycle](https://github.com/diepet/spring-tx-lifecycle)
 
 # Configuration
 
