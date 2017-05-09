@@ -18,15 +18,15 @@ Current last version: 0.9.0
 
 # Configuration
 
-* Configure a transaction manager as explained [here](https://github.com/diepet/spring-tx-eventdispatcher), in order to dispatch transaction lifecycle events.
+* Configure a transaction manager as explained [here](https://github.com/diepet/spring-tx-lifecycle), in order to dispatch transaction lifecycle events.
 * Import `META-INF/context-tx-spring-application-context.xml` Spring configuration file.
 * Define a new Spring bean inheriting its configuration from `transactionContextManagerAbstract` abstract bean.
 
 Example:
 
 ```xml
-	<!-- TX Manager configuration by using spring-tx-eventdispatcher -->		
-	<bean id="transactionManager" class="it.diepet.spring.tx.eventdispatcher.EventDispatcherJpaTransactionManager">
+	<!-- TX Manager configuration by using spring-tx-lifecycle -->		
+	<bean id="transactionManager" class="it.diepet.spring.tx.lifecycle.EventDispatcherJpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory"></property>
 	</bean>
 	
